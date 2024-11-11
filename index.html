@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
+        <input type="text" name="name" placeholder="Name">
+        <br>
+        <input type="text" name="price" placeholder="Price">
+        <br>
+        <input type="text" name="description" placeholder="Description">
+        <br>
+        <label for="product_images">Product Images: </label>
+        <input type="file" name="product_images" multiple accept="image/*">
+        <br/>
+        <label for="ownership_documents">Ownership Documents: </label>
+        <input type="file" name="ownership_documents" multiple accept="image/*">
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+    <script>
+        const form = document.forms[0];
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            // Add additional fields
+            formData.append("item_model", "POP");
+            formData.append("condition", "used");
+            formData.append("brand", "Tecno");
+            formData.append("category", "electronics");
+            formData.append("location", "Lagos State");
+            formData.append("is_negotiable", "false");
+
+            try {
+                const res = await fetch("http://localhost:4001/api/v1/products/upload-electronics", {
+                    headers: {
+                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MGQwZjM0NGEzZWYxMDNhZTkyY2IzYyIsImlhdCI6MTcyODkwOTk0NSwiZXhwIjoxNzMxNTAxOTQ1fQ.oWpyjFTEww9bLyETDTZEX1hFyLFtisqap5ypVzTBnbw"
+                    },
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                const data = await res.json();
+                console.log(data);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+    </script>
+</body>
+</html>
